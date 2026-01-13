@@ -434,16 +434,16 @@ int Impl::JsonWebSocketSend(int id, web::json::value json)
 
 void Impl::startWebSocketListener(WebSocketClientData &wsc)
 {
-    wsc.client->set_message_handler([wsc](const websocket_incoming_message &msg) -> void
+    wsc.client->set_message_handler([amx = wsc.amx, id = wsc.id, callback = wsc.callback, isJson = wsc.isJson](const websocket_incoming_message &msg) -> void
                                     {
         std::string raw = msg.extract_string().get();
 
         ResponseData responseData;
-        responseData.amx = wsc.amx;
-        responseData.id = wsc.id;
-        responseData.callback = wsc.callback;
+        responseData.amx = amx;
+        responseData.id = id;
+        responseData.callback = callback;
         responseData.rawBody = raw;
-        responseData.responseType = wsc.isJson ? E_CONTENT_TYPE::json : E_CONTENT_TYPE::string;
+        responseData.responseType = isJson ? E_CONTENT_TYPE::json : E_CONTENT_TYPE::string;
         responseData.isWebSocket = true;
 
         {
